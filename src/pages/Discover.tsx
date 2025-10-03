@@ -146,7 +146,7 @@ const Discover = () => {
             <h2 className="text-3xl font-bold">Mahabalipuram Destinations</h2>
             <p className="text-muted-foreground">Fixed time slot guided tours</p>
           </div>
-          <Badge variant="secondary" className="text-lg px-4 py-2">
+          <Badge variant="secondary" className="text-sm md:text-lg px-2 py-1 md:px-4 md:py-2">
             {filteredDestinations.length} Destinations
           </Badge>
         </div>
