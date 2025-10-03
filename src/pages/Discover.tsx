@@ -244,9 +244,11 @@ const Discover = () => {
                       </AccordionItem>
                     </Accordion>
 
-                    <Button variant="outline" className="w-full" size="lg">
-                      <Phone className="h-4 w-4 mr-2" />
-                      Contact Us to Book
+                    <Button variant="outline" className="w-full" size="lg" asChild>
+                      <a href="https://linktr.ee/ulatrips" target="_blank" rel="noopener noreferrer">
+                        <Phone className="h-4 w-4 mr-2" />
+                        Contact Us to Book
+                      </a>
                     </Button>
                   </div>
                 )}
