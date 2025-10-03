@@ -219,7 +219,7 @@ const Discover = () => {
                   <div className="w-full space-y-4 animate-in fade-in slide-in-from-top-4">
                     <div className="space-y-2">
                       <h4 className="font-semibold">Available Time Slots:</h4>
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-1 gap-2">
                         {destination.timeSlots.map((slot, idx) => (
                           <Badge key={idx} variant="outline" className="justify-center py-2">
                             {slot}
