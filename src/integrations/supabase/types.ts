@@ -61,35 +61,47 @@ export type Database = {
       }
       destinations: {
         Row: {
+          bookings: number | null
           created_at: string
           description: string
           duration: string
+          faqs: Json | null
+          highlights: string[] | null
           id: string
           image_url: string
           location: string
           name: string
+          rating: number | null
           time_slot: string
           updated_at: string
         }
         Insert: {
+          bookings?: number | null
           created_at?: string
           description: string
           duration: string
+          faqs?: Json | null
+          highlights?: string[] | null
           id?: string
           image_url: string
           location: string
           name: string
+          rating?: number | null
           time_slot?: string
           updated_at?: string
         }
         Update: {
+          bookings?: number | null
           created_at?: string
           description?: string
           duration?: string
+          faqs?: Json | null
+          highlights?: string[] | null
           id?: string
           image_url?: string
           location?: string
           name?: string
+          rating?: number | null
           time_slot?: string
           updated_at?: string
         }
