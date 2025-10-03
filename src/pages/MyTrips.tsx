@@ -2,11 +2,17 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Calendar, MapPin, Clock, CheckCircle, XCircle, AlertCircle, Loader2 } from "lucide-react";
+import { Calendar, MapPin, Clock, CheckCircle, XCircle, AlertCircle, Loader2, User, Mail } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+
+interface Profile {
+  id: string;
+  email: string;
+  full_name: string | null;
+}
 
 interface Booking {
   id: string;
@@ -27,15 +33,34 @@ const MyTrips = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) {
       navigate("/auth");
     } else {
+      fetchProfile();
       fetchBookings();
     }
   }, [user, navigate]);
+
+  const fetchProfile = async () => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (error) throw error;
+      setProfile(data);
+    } catch (error: any) {
+      console.error("Error fetching profile:", error.message);
+    }
+  };
 
   const fetchBookings = async () => {
     if (!user) return;
@@ -118,6 +143,30 @@ const MyTrips = () => {
           Manage your bookings and explore your travel history
         </p>
       </section>
+
+      {/* User Profile Card */}
+      {profile && (
+        <Card className="border-primary/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <User className="h-5 w-5 text-primary" />
+              My Profile
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex items-center gap-2 text-sm">
+              <User className="h-4 w-4 text-muted-foreground" />
+              <span className="font-medium">Name:</span>
+              <span>{profile.full_name || "Not set"}</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              <Mail className="h-4 w-4 text-muted-foreground" />
+              <span className="font-medium">Email:</span>
+              <span>{profile.email}</span>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {bookings.length === 0 ? (
         <Card>
