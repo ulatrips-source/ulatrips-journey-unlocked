@@ -19,7 +19,7 @@ const destinations = [
     duration: "1.5 hours",
     bookings: 1247,
     rating: 4.8,
-    timeSlots: ["9:00 AM - 10:30 AM", "11:00 AM - 12:30 PM", "2:00 PM - 3:30 PM", "4:00 PM - 5:30 PM"],
+    timeSlots: ["12:00 PM - 1:00 PM"],
     highlights: [
       "Ancient Pallava architecture",
       "Scenic oceanfront location",
@@ -50,7 +50,7 @@ const destinations = [
     duration: "1 hour",
     bookings: 892,
     rating: 4.7,
-    timeSlots: ["9:00 AM - 10:00 AM", "10:30 AM - 11:30 AM", "2:00 PM - 3:00 PM", "3:30 PM - 4:30 PM"],
+    timeSlots: ["12:00 PM - 1:00 PM"],
     highlights: [
       "World's largest rock relief",
       "Intricate mythological carvings",
@@ -81,7 +81,7 @@ const destinations = [
     duration: "1.5 hours",
     bookings: 1056,
     rating: 4.9,
-    timeSlots: ["9:00 AM - 10:30 AM", "11:00 AM - 12:30 PM", "1:30 PM - 3:00 PM", "3:30 PM - 5:00 PM"],
+    timeSlots: ["12:00 PM - 1:00 PM"],
     highlights: [
       "Monolithic rock-cut temples",
       "Five unique architectural styles",
