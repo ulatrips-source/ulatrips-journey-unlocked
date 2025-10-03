@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Search, MapPin, Clock, Users, Phone } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -106,6 +107,7 @@ const destinations = [
 ];
 
 const Discover = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDestination, setSelectedDestination] = useState<number | null>(null);
 
@@ -210,6 +212,15 @@ const Discover = () => {
               <CardFooter className="flex-col gap-4">
                 <Button 
                   className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity"
+                  size="lg"
+                  onClick={() => navigate(`/payment?destination=${encodeURIComponent(destination.name)}&location=${encodeURIComponent(destination.location)}&timeSlot=${encodeURIComponent(destination.timeSlots[0])}&duration=${encodeURIComponent(destination.duration)}`)}
+                >
+                  Book Now
+                </Button>
+
+                <Button 
+                  variant="outline"
+                  className="w-full"
                   onClick={() => setSelectedDestination(selectedDestination === destination.id ? null : destination.id)}
                 >
                   {selectedDestination === destination.id ? "Hide Details" : "View Details"}
