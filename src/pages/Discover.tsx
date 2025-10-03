@@ -6,7 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useToast } from "@/hooks/use-toast";
+
+interface FAQ {
+  question: string;
+  answer: string;
+}
 
 interface Destination {
   id: string;
@@ -16,6 +22,10 @@ interface Destination {
   image_url: string;
   duration: string;
   time_slot: string;
+  highlights: string[];
+  faqs: FAQ[];
+  rating: number;
+  bookings: number;
 }
 
 const Discover = () => {
@@ -24,6 +34,7 @@ const Discover = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedDestination, setSelectedDestination] = useState<string | null>(null);
 
   useEffect(() => {
     fetchDestinations();
@@ -37,7 +48,15 @@ const Discover = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setDestinations(data || []);
+      
+      // Transform the data to match our interface
+      const transformedData = (data || []).map(dest => ({
+        ...dest,
+        faqs: (dest.faqs as unknown as FAQ[]) || [],
+        highlights: dest.highlights || [],
+      }));
+      
+      setDestinations(transformedData);
     } catch (error: any) {
       toast({
         title: "Error loading destinations",
@@ -83,8 +102,8 @@ const Discover = () => {
       <section className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-3xl font-bold">Available Destinations</h2>
-            <p className="text-muted-foreground">Guided tours with fixed time slots</p>
+            <h2 className="text-3xl font-bold">Mahabalipuram Destinations</h2>
+            <p className="text-muted-foreground">Fixed time slot guided tours</p>
           </div>
           <Badge variant="secondary" className="text-sm md:text-lg px-2 py-1 md:px-4 md:py-2">
             {filteredDestinations.length} Destinations
@@ -117,6 +136,10 @@ const Discover = () => {
                     alt={destination.name}
                     className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
                   />
+                  <div className="absolute top-4 right-4 bg-background/90 backdrop-blur px-3 py-1 rounded-full flex items-center gap-1">
+                    <span className="text-yellow-500 font-bold">★</span>
+                    <span className="font-semibold">{destination.rating}</span>
+                  </div>
                 </div>
                 
                 <CardHeader>
@@ -138,10 +161,24 @@ const Discover = () => {
                       <span>{destination.duration}</span>
                     </div>
                     <div className="flex items-center gap-2 text-muted-foreground">
-                      <Clock className="h-4 w-4" />
-                      <span>{destination.time_slot}</span>
+                      <Users className="h-4 w-4" />
+                      <span>{destination.bookings} bookings</span>
                     </div>
                   </div>
+
+                  {destination.highlights && destination.highlights.length > 0 && (
+                    <div className="space-y-2">
+                      <h4 className="font-semibold text-sm">Highlights:</h4>
+                      <ul className="grid grid-cols-2 gap-2 text-xs">
+                        {destination.highlights.map((highlight, idx) => (
+                          <li key={idx} className="flex items-center gap-1">
+                            <span className="text-primary">✓</span>
+                            <span>{highlight}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </CardContent>
 
                 <CardFooter className="flex-col gap-4">
@@ -153,12 +190,49 @@ const Discover = () => {
                     Book Now
                   </Button>
 
-                  <Button variant="outline" className="w-full" size="lg" asChild>
-                    <a href="https://linktr.ee/ulatrips" target="_blank" rel="noopener noreferrer">
-                      <Phone className="h-4 w-4 mr-2" />
-                      Contact Us
-                    </a>
+                  <Button 
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => setSelectedDestination(selectedDestination === destination.id ? null : destination.id)}
+                  >
+                    {selectedDestination === destination.id ? "Hide Details" : "View Details"}
                   </Button>
+
+                  {selectedDestination === destination.id && (
+                    <div className="w-full space-y-4 animate-in fade-in slide-in-from-top-4">
+                      <div className="space-y-2">
+                        <h4 className="font-semibold">Available Time Slot:</h4>
+                        <Badge variant="outline" className="w-full justify-center py-2">
+                          {destination.time_slot}
+                        </Badge>
+                      </div>
+
+                      {destination.faqs && destination.faqs.length > 0 && (
+                        <Accordion type="single" collapsible className="w-full">
+                          <AccordionItem value="faqs">
+                            <AccordionTrigger>Frequently Asked Questions</AccordionTrigger>
+                            <AccordionContent>
+                              <div className="space-y-4">
+                                {destination.faqs.map((faq, idx) => (
+                                  <div key={idx} className="space-y-1">
+                                    <h5 className="font-semibold text-sm">{faq.question}</h5>
+                                    <p className="text-xs text-muted-foreground">{faq.answer}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            </AccordionContent>
+                          </AccordionItem>
+                        </Accordion>
+                      )}
+
+                      <Button variant="outline" className="w-full" size="lg" asChild>
+                        <a href="https://linktr.ee/ulatrips" target="_blank" rel="noopener noreferrer">
+                          <Phone className="h-4 w-4 mr-2" />
+                          Contact Us to Book
+                        </a>
+                      </Button>
+                    </div>
+                  )}
                 </CardFooter>
               </Card>
             ))}
