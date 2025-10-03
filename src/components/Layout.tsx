@@ -1,9 +1,13 @@
-import { Link, useLocation } from "react-router-dom";
-import { Compass, GraduationCap, MapPin } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Compass, GraduationCap, MapPin, Shield, LogOut, LogIn } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 import logo from "@/assets/ulatrips-logo.jpeg";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, isAdmin, signOut } = useAuth();
   
   const navItems = [
     { path: "/", icon: Compass, label: "Discover" },
@@ -11,17 +15,45 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     { path: "/mytrips", icon: MapPin, label: "My Trips" },
   ];
 
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/auth");
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/50">
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-20 items-center justify-center">
+        <div className="container flex h-20 items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
             <img src={logo} alt="ULAtrips" className="h-16 w-16 rounded-full shadow-lg" />
             <span className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
               ULAtrips
             </span>
           </Link>
+          <div className="flex items-center gap-2">
+            {isAdmin && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate("/admin")}
+              >
+                <Shield className="h-4 w-4 mr-2" />
+                Admin
+              </Button>
+            )}
+            {user ? (
+              <Button variant="outline" size="sm" onClick={handleSignOut}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
+              </Button>
+            ) : (
+              <Button variant="outline" size="sm" onClick={() => navigate("/auth")}>
+                <LogIn className="h-4 w-4 mr-2" />
+                Sign In
+              </Button>
+            )}
+          </div>
         </div>
       </header>
 
