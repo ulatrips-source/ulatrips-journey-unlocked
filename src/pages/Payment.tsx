@@ -12,7 +12,7 @@ import { ArrowLeft, MapPin, Clock, Calendar, Loader2 } from "lucide-react";
 const Payment = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const { toast } = useToast();
   
   const destinationId = searchParams.get("destinationId") || "";
@@ -25,7 +25,8 @@ const Payment = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!user) {
+    // Wait for auth to load before checking
+    if (!loading && !user) {
       toast({
         title: "Authentication required",
         description: "Please sign in to book a tour",
@@ -33,7 +34,7 @@ const Payment = () => {
       });
       navigate("/auth");
     }
-  }, [user, navigate, toast]);
+  }, [user, loading, navigate, toast]);
 
   const handleBooking = async () => {
     if (!user || !destinationId) {
@@ -74,6 +75,15 @@ const Payment = () => {
       setIsSubmitting(false);
     }
   };
+
+  // Show loading while checking auth
+  if (loading) {
+    return (
+      <div className="container py-8 flex justify-center items-center min-h-[50vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="container py-8 space-y-8">
